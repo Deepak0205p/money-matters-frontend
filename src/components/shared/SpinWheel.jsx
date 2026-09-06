@@ -250,15 +250,20 @@ export default function SpinWheel({ open, onClose }) {
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[22px] border-t-amber-500 drop-shadow-md" />
 
             {/* Rotating Wheel Container */}
-            <div className="absolute inset-0 rounded-full border-4 border-amber-200 shadow-md flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full border-4 border-amber-300 shadow-xl flex items-center justify-center bg-slate-900 overflow-hidden">
               <motion.div
-                className="w-full h-full rounded-full overflow-hidden"
+                className="w-full h-full rounded-full relative"
                 style={{
                   transform: `rotate(${rotation}deg)`,
                   transition: spinning ? 'transform 4.5s cubic-bezier(0.12, 0.8, 0.33, 1)' : 'none'
                 }}
               >
                 <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                  <defs>
+                    <filter id="segmentShadow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="0" dy="0" stdDeviation="0.5" floodColor="#000" floodOpacity="0.2" />
+                    </filter>
+                  </defs>
                   {SEGMENTS.map((seg, i) => {
                     const startAngle = (i * 360) / SEGMENTS.length;
                     const endAngle = ((i + 1) * 360) / SEGMENTS.length;
@@ -267,34 +272,52 @@ export default function SpinWheel({ open, onClose }) {
                     const x2 = 50 + 50 * Math.cos((Math.PI * endAngle) / 180);
                     const y2 = 50 + 50 * Math.sin((Math.PI * endAngle) / 180);
 
+                    // Mid angle for text
+                    const midAngle = startAngle + (endAngle - startAngle) / 2;
+                    const rad = (Math.PI * midAngle) / 180;
+                    const textX = 50 + 31 * Math.cos(rad);
+                    const textY = 50 + 31 * Math.sin(rad);
+                    const emojiX = 50 + 41 * Math.cos(rad);
+                    const emojiY = 50 + 41 * Math.sin(rad);
+
                     return (
-                      <path
-                        key={seg.id}
-                        d={`M 50 50 L ${x1} ${y1} A 50 50 0 0 1 ${x2} ${y2} Z`}
-                        fill={seg.color}
-                        stroke="#ffffff"
-                        strokeWidth="1.5"
-                      />
+                      <g key={seg.id}>
+                        <path
+                          d={`M 50 50 L ${x1} ${y1} A 50 50 0 0 1 ${x2} ${y2} Z`}
+                          fill={seg.color}
+                          stroke="#ffffff"
+                          strokeWidth="1.2"
+                        />
+                        {/* Emoji icon */}
+                        <text
+                          x={emojiX}
+                          y={emojiY}
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          fontSize="5.5"
+                          transform={`rotate(${midAngle + 90}, ${emojiX}, ${emojiY})`}
+                        >
+                          {seg.emoji}
+                        </text>
+                        {/* Text label */}
+                        <text
+                          x={textX}
+                          y={textY}
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          fill="#ffffff"
+                          fontSize="3.2"
+                          fontWeight="900"
+                          letterSpacing="0.2"
+                          filter="url(#segmentShadow)"
+                          transform={`rotate(${midAngle + 90}, ${textX}, ${textY})`}
+                        >
+                          {seg.label}
+                        </text>
+                      </g>
                     );
                   })}
                 </svg>
-
-                {SEGMENTS.map((seg, i) => {
-                  const angle = (i * 360) / SEGMENTS.length + 360 / (SEGMENTS.length * 2);
-                  return (
-                    <div
-                      key={seg.id}
-                      className="absolute w-full h-full flex items-start justify-center pt-3 text-center pointer-events-none"
-                      style={{
-                        transform: `rotate(${angle}deg)`
-                      }}
-                    >
-                      <span className="text-sm select-none filter drop-shadow-sm font-bold text-white">
-                        {seg.emoji}
-                      </span>
-                    </div>
-                  );
-                })}
               </motion.div>
             </div>
 
