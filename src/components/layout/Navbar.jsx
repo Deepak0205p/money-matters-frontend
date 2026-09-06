@@ -27,6 +27,7 @@ import InvestmentComparison from '@/components/shared/InvestmentComparison';
 import EmergencyFundCalculator from '@/components/shared/EmergencyFundCalculator';
 import HabitTracker from '@/components/shared/HabitTracker';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 function getIcon(iconName) {
   if (!iconName) return Construction;
@@ -460,6 +461,11 @@ export function Navbar() {
                   children: ["Progress: ", completionPercentage, "% complete"]
                 })
               })]
+            })
+          }), /*#__PURE__*/_jsx("div", {
+            className: "ml-1 shrink-0",
+            children: /*#__PURE__*/_jsx(LanguageSelector, {
+              variant: "compact"
             })
           })]
         })]
