@@ -91,7 +91,7 @@ export default function GoalTracker({ open, onClose }) {
     });
 
     // Navigate to roadmap page
-    setTimeout(() => router.push(`/home/goals/${newGoal.id}/roadmap`), 500);
+    setTimeout(() => router.push(`/home/goals/roadmap?goalId=${newGoal.id}`), 500);
   };
 
   const handleAddSavings = (goalId, goalSaved, goalTarget) => {
@@ -303,7 +303,10 @@ export default function GoalTracker({ open, onClose }) {
                             </div>
                             <div className="flex items-center gap-1">
                               <button
-                                onClick={() => router.push(`/home/goals/${g.id}/roadmap`)}
+                                onClick={() => {
+                                  if (onClose) onClose();
+                                  router.push(`/home/goals/roadmap?goalId=${g.id}`);
+                                }}
                                 className="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-all cursor-pointer"
                                 title="View Roadmap"
                               >

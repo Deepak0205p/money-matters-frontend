@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useAppStore, useHydration } from '@/lib/store/useAppStore';
 import { toast } from '@/hooks/use-toast';
+import { apiFetch } from '@/lib/apiClient';
 
 // ─── Editable Text Field ──────────────────────────────────────
 function EditableField({ value, onSave, className, multiline = false, tag: Tag = 'span' }) {
@@ -428,11 +429,11 @@ function MonthDetailPanel({ group, detail, loading, goalId, onSaveDetail }) {
 // ═════════════════════════════════════════════════════════════════
 // MAIN PAGE
 // ═════════════════════════════════════════════════════════════════
-export default function GoalRoadmapPage() {
+export default function GoalRoadmapPage({ goalId: propGoalId }) {
   const hydrated = useHydration();
   const router = useRouter();
   const params = useParams();
-  const goalId = params?.goalId;
+  const goalId = propGoalId || params?.goalId;
 
   const { goals, isAuthenticated, coins, completedModules, streak,
     updateGoalRoadmap, updateGoalMonthDetail, updateGoalEdited } = useAppStore();
@@ -454,7 +455,7 @@ export default function GoalRoadmapPage() {
     const generate = async () => {
       setLoading(true); setError(null);
       try {
-        const res = await fetch('/api/goal-roadmap', {
+        const res = await apiFetch('/api/goal-roadmap', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -484,7 +485,7 @@ export default function GoalRoadmapPage() {
     setSelectedGroup(group);
     setDetailLoading(true);
     try {
-      const res = await fetch('/api/goal-roadmap', {
+      const res = await apiFetch('/api/goal-roadmap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

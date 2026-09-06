@@ -93,7 +93,7 @@ export default function GoalsPage() {
     });
 
     // Navigate to roadmap page
-    setTimeout(() => router.push(`/home/goals/${newGoal.id}/roadmap`), 500);
+    setTimeout(() => router.push(`/home/goals/roadmap?goalId=${newGoal.id}`), 500);
   };
 
   const handleAddSavings = (goalId, goalSaved, goalTarget) => {
@@ -301,7 +301,7 @@ export default function GoalsPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => router.push(`/home/goals/${g.id}/roadmap`)}
+                            onClick={() => router.push(`/home/goals/roadmap?goalId=${g.id}`)}
                             className="p-2 rounded-xl bg-blue-50 border border-emerald-200 text-emerald-700 hover:bg-blue-100 transition-all"
                             title="View Roadmap"
                           >
@@ -394,7 +394,7 @@ export default function GoalsPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => router.push(`/home/goals/${g.id}/roadmap`)}
+                          onClick={() => router.push(`/home/goals/roadmap?goalId=${g.id}`)}
                           className="p-2 rounded-xl bg-blue-50 border border-emerald-200 text-emerald-800 hover:bg-blue-100 transition-all"
                           title="View Roadmap"
                         >
