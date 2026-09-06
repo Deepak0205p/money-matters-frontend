@@ -6,14 +6,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { auth, googleProvider } from '@/lib/firebase';
 import { signInWithPopup } from 'firebase/auth';
 import { useAppStore } from '@/lib/store/useAppStore';
+import Link from 'next/link';
 import { 
-  Sparkles, AlertCircle, Loader2, ShieldCheck, CheckCircle2, Award, Zap
+  Sparkles, AlertCircle, Loader2, ShieldCheck, CheckCircle2, Award, Zap, ArrowRight, ArrowLeft, Lock
 } from 'lucide-react';
 
 export default function AuthPage() {
   const router = useRouter();
   const { setUser } = useAppStore();
 
+  const [mode, setMode] = useState('login'); // 'login' | 'signup'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -42,7 +44,7 @@ export default function AuthPage() {
       } else if (err.code === 'auth/unauthorized-domain') {
         setError('This domain is not authorized in Firebase Console. Add your Render domain to Authorized Domains.');
       } else {
-        setError(err.message || 'Google sign in failed. Please try again.');
+        setError(err.message || 'Google authentication failed. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -50,35 +52,77 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] flex flex-col items-center justify-center relative overflow-hidden px-4 py-12">
+    <div className="min-h-screen bg-[#FAFAF8] flex flex-col items-center justify-center relative overflow-hidden px-4 py-10">
       
       {/* Background Decor */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/[0.05] blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-amber-500/[0.05] blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-500/[0.05] blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-indigo-500/[0.05] blur-[120px] pointer-events-none" />
 
-      {/* Main Container */}
+      {/* Back to Home Link */}
+      <div className="w-full max-w-md mb-4 flex justify-between items-center relative z-10 px-1">
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+        >
+          <ArrowLeft size={14} />
+          <span>Back to Home</span>
+        </Link>
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+          {mode === 'login' ? 'Welcome Back' : 'Get Started'}
+        </span>
+      </div>
+
+      {/* Main Card */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, type: 'spring', stiffness: 200, damping: 20 }}
-        className="w-full max-w-md bg-white border border-slate-200/90 rounded-[2rem] shadow-[0_4px_30px_rgba(0,0,0,0.06)] p-8 relative z-10"
+        className="w-full max-w-md bg-white border border-slate-200/90 rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-7 sm:p-8 relative z-10"
       >
-        {/* Header */}
-        <div className="text-center mb-8">
+        {/* Brand Icon & Title */}
+        <div className="text-center mb-6">
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="size-16 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mx-auto mb-5 shadow-xs"
+            className="size-14 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mx-auto mb-4 shadow-xs"
           >
-            <Sparkles className="size-8 text-emerald-700" />
+            <Sparkles className="size-7 text-blue-600" />
           </motion.div>
-          <h1 className="font-display text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+          <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Money Matters
           </h1>
-          <p className="text-sm text-slate-600">
-            Sign in with your Google account to save and sync your learning progress.
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            {mode === 'login' 
+              ? 'Log in to continue your financial learning journey' 
+              : 'Create your account with 1-click Google OAuth'}
           </p>
+        </div>
+
+        {/* Tab Toggle (Login / Sign Up) */}
+        <div className="grid grid-cols-2 p-1 bg-slate-100/90 rounded-2xl mb-6">
+          <button
+            type="button"
+            onClick={() => setMode('login')}
+            className={`py-2 text-xs font-extrabold rounded-xl transition-all cursor-pointer ${
+              mode === 'login'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            Log In
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('signup')}
+            className={`py-2 text-xs font-extrabold rounded-xl transition-all cursor-pointer ${
+              mode === 'signup'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            Sign Up
+          </button>
         </div>
 
         {/* Error Alert */}
@@ -88,39 +132,39 @@ export default function AuthPage() {
               initial={{ opacity: 0, height: 0, mb: 0 }}
               animate={{ opacity: 1, height: 'auto', mb: 20 }}
               exit={{ opacity: 0, height: 0, mb: 0 }}
-              className="bg-rose-50 border border-rose-200 text-rose-700 text-sm px-4 py-3 rounded-xl flex items-start gap-3 overflow-hidden"
+              className="bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 rounded-xl flex items-start gap-2.5 overflow-hidden"
             >
               <AlertCircle className="size-4 shrink-0 mt-0.5 text-rose-600" />
-              <p className="leading-tight text-xs font-semibold">{error}</p>
+              <p className="leading-tight font-semibold">{error}</p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Feature badges */}
-        <div className="space-y-2.5 mb-8 bg-slate-50 border border-slate-100 rounded-2xl p-4">
+        {/* Perks / Benefits */}
+        <div className="space-y-2.5 mb-6 bg-slate-50 border border-slate-100 rounded-2xl p-4">
           <div className="flex items-center gap-3 text-xs font-medium text-slate-700">
             <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
-            <span>Real-time Cloud Sync across all your devices</span>
+            <span>{mode === 'login' ? 'Sync your active progress across devices' : 'Instant free access to all 11 modules'}</span>
           </div>
           <div className="flex items-center gap-3 text-xs font-medium text-slate-700">
             <Award className="size-4 text-amber-500 shrink-0" />
-            <span>Save earned Badges, Coins, and Streaks</span>
+            <span>Save earned badges, coins, & streak rewards</span>
           </div>
           <div className="flex items-center gap-3 text-xs font-medium text-slate-700">
-            <Zap className="size-4 text-indigo-500 shrink-0" />
-            <span>Instant One-Tap Google Sign In</span>
+            <Lock className="size-4 text-blue-600 shrink-0" />
+            <span>Secure 1-Click Google OAuth (No password needed)</span>
           </div>
         </div>
 
-        {/* Google Auth Button */}
+        {/* Exclusive Google OAuth Button */}
         <button 
           type="button"
           onClick={handleGoogleAuth}
           disabled={loading}
-          className="w-full bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-emerald-600 text-slate-800 font-extrabold text-sm py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer shadow-sm hover:shadow-md"
+          className="w-full bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-blue-600 text-slate-800 font-extrabold text-sm py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer shadow-sm hover:shadow-md"
         >
           {loading ? (
-            <Loader2 className="size-5 animate-spin text-emerald-700" />
+            <Loader2 className="size-5 animate-spin text-blue-600" />
           ) : (
             <>
               <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
@@ -129,23 +173,40 @@ export default function AuthPage() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              <span>Continue with Google</span>
+              <span>{mode === 'login' ? 'Log in with Google' : 'Sign up with Google'}</span>
             </>
           )}
         </button>
 
+        {/* Mode Toggle Footer */}
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+            className="text-xs text-slate-500 hover:text-blue-600 transition-colors cursor-pointer"
+          >
+            {mode === 'login' ? (
+              <span>Don't have an account? <strong className="text-blue-600 font-bold">Sign Up</strong></span>
+            ) : (
+              <span>Already have an account? <strong className="text-blue-600 font-bold">Log In</strong></span>
+            )}
+          </button>
+        </div>
+
         {/* Guest fallback */}
-        <button 
-          type="button"
-          onClick={() => {
-            useAppStore.getState().loginAsGuest();
-            router.push('/home/dashboard');
-          }}
-          className="w-full mt-4 text-xs font-bold text-slate-500 hover:text-emerald-800 transition-colors py-2.5 flex justify-center items-center gap-2 rounded-xl hover:bg-emerald-50/50 cursor-pointer"
-        >
-          <ShieldCheck className="size-4 text-emerald-700" />
-          <span>Continue as Guest (Offline Mode)</span>
-        </button>
+        <div className="mt-5 pt-4 border-t border-slate-100">
+          <button 
+            type="button"
+            onClick={() => {
+              useAppStore.getState().loginAsGuest();
+              router.push('/home/dashboard');
+            }}
+            className="w-full text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors py-2 flex justify-center items-center gap-2 rounded-xl hover:bg-slate-50 cursor-pointer"
+          >
+            <ShieldCheck className="size-4 text-blue-600" />
+            <span>Continue as Guest (Explore First)</span>
+          </button>
+        </div>
       </motion.div>
     </div>
   );
