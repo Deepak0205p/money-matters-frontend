@@ -31,11 +31,11 @@ const SEGMENTS = [
     coinAmount: 100
   },
   {
-    id: 'badge',
-    label: 'Mystery Badge',
+    id: 'mystery',
+    label: 'Mystery Box',
     emoji: '🎁',
     color: '#8B5CF6',
-    type: 'badge'
+    type: 'mystery'
   },
   {
     id: 'c25',
@@ -53,19 +53,27 @@ const SEGMENTS = [
     type: 'shield'
   },
   {
-    id: 'unlock',
-    label: 'Tool Unlock',
-    emoji: '🔓',
+    id: 'c200',
+    label: '+200 Coins',
+    emoji: '💎',
     color: '#EC4899',
-    type: 'unlock'
+    type: 'coins',
+    coinAmount: 200
   },
   {
     id: 'retry',
-    label: 'Better Luck!',
-    emoji: '😅',
-    color: '#64748B',
-    type: 'retry'
+    label: 'Lucky Spin',
+    emoji: '⚡',
+    color: '#10B981',
+    type: 'coins',
+    coinAmount: 10
   }
+];
+
+const MYSTERY_REWARDS = [
+  { coins: 150, title: 'Mega Coin Vault!', desc: '150 Gold Coins unlocked from Mystery Box! 🪙' },
+  { coins: 250, title: 'Jackpot Mystery!', desc: '250 Coins + Diamond Tier Badge awarded! 💎' },
+  { coins: 100, title: 'Mystery Knowledge Pack!', desc: '100 Coins + Secret Finance Power-Up! 🚀' }
 ];
 
 const TIPS = [
@@ -81,7 +89,6 @@ const TIPS = [
 
 const SEG_COUNT = SEGMENTS.length;
 const SEG_ANGLE = 360 / SEG_COUNT;
-const DAILY_COOLDOWN = 24 * 60 * 60 * 1000; // 24 hours
 
 function ConfettiBurst() {
   const pieces = Array.from({ length: 36 }, (_, i) => i);
@@ -105,20 +112,8 @@ function ConfettiBurst() {
   );
 }
 
-function formatCountdown(ms) {
-  if (ms <= 0) return 'Abhi spin kar sakte ho!';
-  const totalSec = Math.floor(ms / 1000);
-  const h = Math.floor(totalSec / 3600);
-  const m = Math.floor((totalSec % 3600) / 60);
-  const s = totalSec % 60;
-  if (h > 0) return `${h}h ${m}m`;
-  if (m > 0) return `${m}m ${s}s`;
-  return `${s}s`;
-}
-
 export default function SpinWheel({ open, onClose }) {
   const {
-    lastSpinTime,
     totalSpins,
     spinWinnings,
     setLastSpinTime,
@@ -132,28 +127,18 @@ export default function SpinWheel({ open, onClose }) {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [now, setNow] = useState(Date.now());
   const [history, setHistory] = useState([]);
   const [tipMessage, setTipMessage] = useState('');
-  const tickRef = useRef(null);
+  const [mysteryReward, setMysteryReward] = useState(null);
 
-  useEffect(() => {
-    if (!open) return;
-    setNow(Date.now());
-    tickRef.current = setInterval(() => setNow(Date.now()), 1000);
-    return () => {
-      if (tickRef.current) clearInterval(tickRef.current);
-    };
-  }, [open]);
-
-  const cooldownLeft = Math.max(0, DAILY_COOLDOWN - (now - (lastSpinTime || 0)));
-  const canSpin = cooldownLeft === 0 && !spinning;
+  const canSpin = !spinning;
 
   const handleSpin = useCallback(() => {
-    if (!canSpin || spinning) return;
+    if (spinning) return;
     setSpinning(true);
     setResult(null);
     setShowConfetti(false);
+    setMysteryReward(null);
 
     const winIdx = Math.floor(Math.random() * SEG_COUNT);
     const winningSegment = SEGMENTS[winIdx];
@@ -172,14 +157,20 @@ export default function SpinWheel({ open, onClose }) {
       if (winningSegment.type === 'coins' && winningSegment.coinAmount) {
         addSpinWinnings(winningSegment.coinAmount);
         addCoins(winningSegment.coinAmount);
-      } else if (winningSegment.type === 'badge') {
-        addBadge(`mystery-badge-${Date.now()}`);
-        addCoins(20);
+      } else if (winningSegment.type === 'mystery') {
+        const randomMystery = MYSTERY_REWARDS[Math.floor(Math.random() * MYSTERY_REWARDS.length)];
+        setMysteryReward(randomMystery);
+        addSpinWinnings(randomMystery.coins);
+        addCoins(randomMystery.coins);
+        addBadge('mystery-box-champion');
       } else if (winningSegment.type === 'shield') {
         addBadge('streak-shield');
-        addCoins(20);
+        addCoins(30);
+        addSpinWinnings(30);
       } else if (winningSegment.type === 'tip') {
         setTipMessage(TIPS[Math.floor(Math.random() * TIPS.length)]);
+        addCoins(10);
+        addSpinWinnings(10);
       }
 
       const entry = {
@@ -194,15 +185,14 @@ export default function SpinWheel({ open, onClose }) {
       };
       setHistory(h => [entry, ...h].slice(0, 8));
 
-      if (winningSegment.type !== 'retry') {
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 3000);
-      }
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000);
     }, 4500);
-  }, [canSpin, spinning, rotation, setLastSpinTime, incrementTotalSpins, addSpinWinnings, addBadge, addCoins]);
+  }, [spinning, rotation, setLastSpinTime, incrementTotalSpins, addSpinWinnings, addBadge, addCoins]);
 
   const handleClaim = useCallback(() => {
     setResult(null);
+    setMysteryReward(null);
   }, []);
 
   if (!open) return null;
@@ -229,12 +219,12 @@ export default function SpinWheel({ open, onClose }) {
             </div>
             <div>
               <h2 className="text-base font-black font-display text-slate-900">Kismat Chakra 🎡</h2>
-              <p className="text-[11px] font-medium text-slate-500">Roz ek free spin — win coins and badges!</p>
+              <p className="text-[11px] font-medium text-slate-500">Spin the wheel and win coins, mystery boxes & badges!</p>
             </div>
           </div>
           <button 
             onClick={onClose} 
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-all focus:outline-none"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-all focus:outline-none cursor-pointer"
           >
             <X size={18} />
           </button>
@@ -324,33 +314,21 @@ export default function SpinWheel({ open, onClose }) {
             {/* Center Pin Button */}
             <button
               onClick={handleSpin}
-              disabled={spinning || !canSpin}
+              disabled={spinning}
               className="absolute z-10 w-16 h-16 rounded-full bg-white border-4 border-amber-300 shadow-xl flex flex-col items-center justify-center cursor-pointer transition-transform active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
             >
               <Sparkles size={16} className="text-amber-500 animate-spin" />
               <span className="text-[9px] font-black uppercase text-slate-800 tracking-wider">
-                {spinning ? '...' : canSpin ? 'SPIN' : 'WAIT'}
+                {spinning ? '...' : 'SPIN'}
               </span>
             </button>
           </div>
 
-          {/* Action / Countdown Container */}
+          {/* Action Callout */}
           <div className="text-center pt-2">
-            {canSpin ? (
-              <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-black uppercase tracking-wider">
-                <Sparkles size={14} className="text-emerald-600" /> Free Spin Available!
-              </div>
-            ) : (
-              <div className="px-6 py-4 bg-slate-50 border border-slate-200/90 rounded-2xl inline-flex items-center gap-3 text-left">
-                <Clock size={16} className="text-amber-600" />
-                <div>
-                  <p className="text-xs font-black text-slate-900 uppercase tracking-wider">Next Spin Ready Kal!</p>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">
-                    Spin in: {formatCountdown(cooldownLeft)}
-                  </p>
-                </div>
-              </div>
-            )}
+            <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-black uppercase tracking-wider">
+              <Sparkles size={14} className="text-emerald-600" /> Instant Spin Available!
+            </div>
           </div>
 
           {/* Spin Result Display */}
@@ -369,19 +347,25 @@ export default function SpinWheel({ open, onClose }) {
                 {result.type === 'coins' && result.coinAmount && (
                   <p className="text-xs font-black text-emerald-700">+ {result.coinAmount} Coins added to balance!</p>
                 )}
+
+                {result.type === 'mystery' && mysteryReward && (
+                  <div className="p-3.5 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 text-center space-y-1">
+                    <p className="text-xs font-black text-purple-900">{mysteryReward.title}</p>
+                    <p className="text-[11px] font-bold text-purple-700">{mysteryReward.desc}</p>
+                    <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[10px] font-black">
+                      + {mysteryReward.coins} Coins & Mystery Badge Added!
+                    </span>
+                  </div>
+                )}
+
                 {result.type === 'tip' && (
                   <div className="p-3 rounded-2xl bg-white border border-slate-200 text-[11px] text-slate-700 leading-relaxed font-semibold italic text-left">
                     🧠 {tipMessage || TIPS[0]}
                   </div>
                 )}
-                {result.type === 'badge' && (
-                  <p className="text-xs font-black text-purple-700">Naya badge added to Sammaan Gallery! 🏆</p>
-                )}
+
                 {result.type === 'shield' && (
-                  <p className="text-xs font-black text-cyan-700">Streak Shield active! Daily checklist skipped shield 🛡️</p>
-                )}
-                {result.type === 'retry' && (
-                  <p className="text-xs font-black text-slate-500">Koi baat nahi, consistency is the key! 💪</p>
+                  <p className="text-xs font-black text-cyan-700">Streak Shield active! Daily checklist skipped shield 🛡️ (+30 Coins)</p>
                 )}
 
                 <button
@@ -442,7 +426,7 @@ export default function SpinWheel({ open, onClose }) {
         {/* Footer */}
         <div className="shrink-0 px-6 py-4 border-t border-slate-100 bg-slate-50/80 backdrop-blur-md flex items-center justify-center text-center">
           <p className="text-[10px] text-slate-500 font-bold tracking-wide">
-            Kismat Chakra — spins are restricted to 1 spin per user account daily
+            Kismat Chakra — Spin to test your luck and unlock rewards
           </p>
         </div>
       </motion.div>

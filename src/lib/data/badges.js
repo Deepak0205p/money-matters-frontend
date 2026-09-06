@@ -394,6 +394,28 @@ const SPECIAL_BADGES = [
     rewardCoins: 50,
     rarity: 12,
   },
+  {
+    id: "mystery-box-champion",
+    name: "Mystery Box Winner",
+    description: "Kismat Chakra mein secret Mystery Box unlock kiya!",
+    category: "special",
+    emoji: "🎁",
+    tier: "diamond",
+    requirement: "Spin Wheel mein Mystery Box jeeto",
+    rewardCoins: 100,
+    rarity: 5,
+  },
+  {
+    id: "streak-shield",
+    name: "Streak Shield Protector",
+    description: "Daily streak protection shield active kiya!",
+    category: "special",
+    emoji: "🛡️",
+    tier: "gold",
+    requirement: "Spin Wheel mein Streak Shield pao",
+    rewardCoins: 50,
+    rarity: 10,
+  },
 ];
 
 // ────────────────────────────────────────────────────────────────────────
