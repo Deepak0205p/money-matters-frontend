@@ -19,6 +19,8 @@ export function Navbar() {
   } = useAppStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const isUserLoggedIn = isAuthenticated && !!user?.email;
+
   return (
     <motion.nav
       initial={{ y: -100, opacity: 0 }}
@@ -44,25 +46,29 @@ export function Navbar() {
           {/* Desktop Right Nav Controls */}
           <div className="hidden items-center gap-3 md:flex">
             
-            {/* Coins indicator */}
-            <div className="flex items-center gap-2 rounded-xl bg-amber-500/10 border border-amber-500/20 px-3.5 py-1.5 shadow-sm">
-              <Coins size={14} className="text-amber-600" />
-              <span className="font-bold text-amber-700 text-xs tabular-nums">{coins}</span>
-            </div>
+            {/* Show real active stats ONLY when logged in */}
+            {isUserLoggedIn && (
+              <>
+                <div className="flex items-center gap-2 rounded-xl bg-amber-500/10 border border-amber-500/20 px-3.5 py-1.5 shadow-sm">
+                  <Coins size={14} className="text-amber-600" />
+                  <span className="font-bold text-amber-700 text-xs tabular-nums">{coins}</span>
+                </div>
 
-            {/* Streak indicator */}
-            <div className="flex items-center gap-2 rounded-xl bg-orange-500/10 border border-orange-500/20 px-3.5 py-1.5 shadow-sm">
-              <Trophy size={14} className="text-orange-600" />
-              <span className="font-bold text-orange-700 text-xs">
-                {streak} din
-              </span>
-            </div>
+                <div className="flex items-center gap-2 rounded-xl bg-orange-500/10 border border-orange-500/20 px-3.5 py-1.5 shadow-sm">
+                  <Trophy size={14} className="text-orange-600" />
+                  <span className="font-bold text-orange-700 text-xs">
+                    {streak} din
+                  </span>
+                </div>
+              </>
+            )}
 
             {/* Language Selector */}
             <LanguageSelector variant="compact" />
 
+            {/* Auth Buttons */}
             <div className="flex items-center gap-2">
-              {isAuthenticated && user?.email ? (
+              {isUserLoggedIn ? (
                 <Link
                   href="/home/dashboard"
                   className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-extrabold text-white shadow-sm transition-all transform hover:-translate-y-0.5"
@@ -74,7 +80,7 @@ export function Navbar() {
                 <>
                   <Link
                     href="/auth"
-                    className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3.5 py-2 text-xs font-bold text-slate-700 transition-all"
+                    className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-4 py-2 text-xs font-bold text-slate-700 transition-all cursor-pointer"
                   >
                     <LogIn size={13} className="text-slate-600" />
                     <span>Log In</span>
@@ -82,7 +88,7 @@ export function Navbar() {
 
                   <Link
                     href="/auth"
-                    className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-extrabold text-white shadow-sm transition-all transform hover:-translate-y-0.5"
+                    className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-extrabold text-white shadow-sm transition-all transform hover:-translate-y-0.5 cursor-pointer"
                   >
                     <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#fff"/>
@@ -117,33 +123,35 @@ export function Navbar() {
             className="md:hidden overflow-hidden"
           >
             <div className="glass-strong rounded-2xl mt-2 p-4 space-y-3 shadow-premium border-b-4 border-blue-500/10">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex items-center justify-between rounded-xl bg-gold/10 border border-gold/20 p-3 border-b-2">
-                  <div className="flex items-center gap-2">
-                    <Coins size={15} className="text-gold-soft" />
-                    <span className="font-bold text-gold-soft text-sm">{coins}</span>
+              {isUserLoggedIn && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex items-center justify-between rounded-xl bg-gold/10 border border-gold/20 p-3 border-b-2">
+                    <div className="flex items-center gap-2">
+                      <Coins size={15} className="text-gold-soft" />
+                      <span className="font-bold text-gold-soft text-sm">{coins}</span>
+                    </div>
+                    <span className="text-[10px] text-gold-soft/70 uppercase font-semibold">
+                      Coins
+                    </span>
                   </div>
-                  <span className="text-[10px] text-gold-soft/70 uppercase font-semibold">
-                    Coins
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-xl bg-orange-400/10 border border-orange-400/20 p-3 border-b-2">
-                  <div className="flex items-center gap-2">
-                    <Trophy size={15} className="text-orange-300" />
-                    <span className="font-bold text-orange-300 text-sm">{streak}</span>
+                  <div className="flex items-center justify-between rounded-xl bg-orange-400/10 border border-orange-400/20 p-3 border-b-2">
+                    <div className="flex items-center gap-2">
+                      <Trophy size={15} className="text-orange-300" />
+                      <span className="font-bold text-orange-300 text-sm">{streak}</span>
+                    </div>
+                    <span className="text-[10px] text-orange-300/70 uppercase font-semibold">
+                      Streak
+                    </span>
                   </div>
-                  <span className="text-[10px] text-orange-300/70 uppercase font-semibold">
-                    Streak
-                  </span>
                 </div>
-              </div>
+              )}
 
               {/* Language Selector Mobile */}
               <div className="flex items-center gap-2">
                 <LanguageSelector variant="compact" />
               </div>
 
-              {isAuthenticated && user?.email ? (
+              {isUserLoggedIn ? (
                 <Link href="/home/dashboard" onClick={() => setIsMenuOpen(false)} className="block">
                   <div className="flex items-center gap-3 rounded-xl bg-blue-600/15 border border-blue-500/25 p-3 cursor-pointer hover:bg-blue-100 transition-colors">
                     <User size={16} className="text-blue-600" />

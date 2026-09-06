@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { auth, googleProvider } from '@/lib/firebase';
 import { signInWithPopup } from 'firebase/auth';
 import { useAppStore } from '@/lib/store/useAppStore';
+import { apiFetch } from '@/lib/apiClient';
 import Link from 'next/link';
 import { 
   Sparkles, AlertCircle, Loader2, ShieldCheck, CheckCircle2, Award, Zap, ArrowRight, ArrowLeft, Lock
@@ -29,13 +30,26 @@ export default function AuthPage() {
         throw new Error('Firebase configuration missing. Please check your environment variables.');
       }
       const cred = await signInWithPopup(auth, googleProvider);
-      setUser({
+      const authenticatedUser = {
         uid: cred.user.uid,
         displayName: cred.user.displayName || 'Learner',
         email: cred.user.email,
         photoURL: cred.user.photoURL,
         emailVerified: true
-      });
+      };
+
+      // Sync user with backend
+      try {
+        await apiFetch('/api/auth/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(authenticatedUser)
+        });
+      } catch (syncErr) {
+        console.warn('Backend sync error:', syncErr);
+      }
+
+      setUser(authenticatedUser);
       router.push('/home/dashboard');
     } catch (err) {
       console.error('Google Auth error:', err);
@@ -144,7 +158,7 @@ export default function AuthPage() {
         <div className="space-y-2.5 mb-6 bg-slate-50 border border-slate-100 rounded-2xl p-4">
           <div className="flex items-center gap-3 text-xs font-medium text-slate-700">
             <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
-            <span>{mode === 'login' ? 'Sync your active progress across devices' : 'Instant free access to all 11 modules'}</span>
+            <span>{mode === 'login' ? 'Sync your active progress across devices' : 'Instant access to all 11 modules'}</span>
           </div>
           <div className="flex items-center gap-3 text-xs font-medium text-slate-700">
             <Award className="size-4 text-amber-500 shrink-0" />
@@ -179,7 +193,7 @@ export default function AuthPage() {
         </button>
 
         {/* Mode Toggle Footer */}
-        <div className="mt-4 text-center">
+        <div className="mt-5 pt-4 border-t border-slate-100 text-center">
           <button
             type="button"
             onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
@@ -190,21 +204,6 @@ export default function AuthPage() {
             ) : (
               <span>Already have an account? <strong className="text-blue-600 font-bold">Log In</strong></span>
             )}
-          </button>
-        </div>
-
-        {/* Guest fallback */}
-        <div className="mt-5 pt-4 border-t border-slate-100">
-          <button 
-            type="button"
-            onClick={() => {
-              useAppStore.getState().loginAsGuest();
-              router.push('/home/dashboard');
-            }}
-            className="w-full text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors py-2 flex justify-center items-center gap-2 rounded-xl hover:bg-slate-50 cursor-pointer"
-          >
-            <ShieldCheck className="size-4 text-blue-600" />
-            <span>Continue as Guest (Explore First)</span>
           </button>
         </div>
       </motion.div>

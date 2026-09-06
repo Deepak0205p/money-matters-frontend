@@ -28,12 +28,10 @@ export function Hero() {
   const wealthGained = Math.max(0, totalValue - totalInvested);
 
   const handleStartLearning = () => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !!useAppStore.getState().user?.email) {
       router.push('/home/dashboard');
     } else {
-      // Seamlessly activate Guest mode for zero-friction trial
-      loginAsGuest();
-      router.push('/home/dashboard');
+      router.push('/auth');
     }
   };
 

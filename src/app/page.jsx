@@ -119,7 +119,7 @@ function FAQAccordion() {
     },
     {
       q: "Do I need to sign up to start learning?",
-      a: "No! You can jump straight in as a Guest with zero friction. Your progress, coins, and streaks are automatically saved locally on your device."
+      a: "Yes! Simply use our 1-click Google Sign-In to start learning immediately. All your progress, earned coins, badges, and streaks are securely saved to the cloud across all your devices."
     },
     {
       q: "What are Coins and Badges used for?",
@@ -205,10 +205,11 @@ export default function HomePage() {
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     const store = useAppStore.getState();
-                    if (!store.isAuthenticated) {
-                      store.loginAsGuest();
+                    if (store.isAuthenticated && store.user?.email) {
+                      router.push('/home/dashboard');
+                    } else {
+                      router.push('/auth');
                     }
-                    router.push('/home/dashboard');
                   }}
                   className="flex items-center justify-center gap-2.5 rounded-xl bg-white hover:bg-slate-100 px-8 py-3.5 text-base font-bold text-slate-900 cursor-pointer shadow-lg transition-all"
                 >

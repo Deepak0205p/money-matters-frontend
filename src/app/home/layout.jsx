@@ -97,16 +97,16 @@ export default function HomeLayout({ children }) {
   ];
 
   useEffect(() => {
-    if (hydrated && !isAuthenticated) {
-      useAppStore.getState().loginAsGuest();
+    if (hydrated && (!isAuthenticated || !user?.email)) {
+      router.replace('/auth');
     }
-  }, [hydrated, isAuthenticated]);
+  }, [hydrated, isAuthenticated, user?.email, router]);
 
   useEffect(() => {
-    if (hydrated && isAuthenticated && user?.uid && !user?.isAnonymous) {
+    if (hydrated && isAuthenticated && user?.uid) {
       loadFromCloud();
     }
-  }, [hydrated, isAuthenticated, user?.uid, user?.isAnonymous]);
+  }, [hydrated, isAuthenticated, user?.uid]);
 
   // Render shell immediately for snappy navigation without full-page blocking spinners
 
