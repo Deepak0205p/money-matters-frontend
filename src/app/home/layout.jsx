@@ -80,7 +80,18 @@ export default function HomeLayout({ children }) {
   } = useAppStore();
 
   // Tab path calculation
-  const activeTab = pathname.split('/').pop() || 'dashboard';
+  const getActiveTab = () => {
+    if (!pathname) return 'dashboard';
+    if (pathname.includes('/home/goals')) return 'goals';
+    if (pathname.includes('/home/chatbot')) return 'chatbot';
+    if (pathname.includes('/home/gamified')) return 'gamified';
+    if (pathname.includes('/home/tools')) return 'tools';
+    if (pathname.includes('/home/history')) return 'history';
+    if (pathname.includes('/home/profile')) return 'profile';
+    if (pathname.includes('/home/bookmarks')) return 'bookmarks';
+    return 'dashboard';
+  };
+  const activeTab = getActiveTab();
 
   // Navigation states
   const [showMoreMenu, setShowMoreMenu] = useState(false);
@@ -316,7 +327,13 @@ export default function HomeLayout({ children }) {
 
           {/* Children Viewport */}
           <div className={`flex-1 mt-16 md:mt-0 ${activeTab === 'chatbot' ? 'overflow-hidden flex flex-col' : 'overflow-y-auto px-4 py-6 md:p-8'}`}>
-            {children}
+            <Suspense fallback={
+              <div className="flex items-center justify-center min-h-[300px]">
+                <div className="w-8 h-8 rounded-full border-3 border-emerald-200 border-t-emerald-700 animate-spin" />
+              </div>
+            }>
+              {children}
+            </Suspense>
           </div>
         </div>
       </div>

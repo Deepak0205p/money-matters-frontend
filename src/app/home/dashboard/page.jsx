@@ -618,7 +618,7 @@ export default function DashboardPage() {
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => {
-                if (['goals', 'expense', 'savings', 'quiz', 'spin'].includes(tool.id)) {
+                if (['goals', 'expense', 'savings', 'quiz', 'spin', 'memory', 'health'].includes(tool.id)) {
                   openToolDialog(tool.id);
                 } else {
                   router.push('/home/tools');
