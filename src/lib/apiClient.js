@@ -1,4 +1,7 @@
-export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || '';
+export const BACKEND_URL = 
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 
+  process.env.NEXT_PUBLIC_API_URL || 
+  'https://money-matters-backend-bs4y.onrender.com';
 
 export function getApiUrl(endpoint) {
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
