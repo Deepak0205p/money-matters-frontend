@@ -108,16 +108,7 @@ export default function HomeLayout({ children }) {
     }
   }, [hydrated, isAuthenticated, user?.uid, user?.isAnonymous]);
 
-  if (!hydrated || !isAuthenticated) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full border-2 border-blue-500/30 border-t-blue-600 animate-spin" />
-          <p className="text-slate-500 text-sm">Loading Money Matters...</p>
-        </div>
-      </div>
-    );
-  }
+  // Render shell immediately for snappy navigation without full-page blocking spinners
 
   return (
     <div className="relative min-h-screen bg-[#F8FAFC] text-slate-900 overflow-x-hidden font-sans">
@@ -153,21 +144,23 @@ export default function HomeLayout({ children }) {
               const Icon = link.Icon;
               const isActive = activeTab === link.id;
               return (
-                <button
+                <Link
                   key={link.id}
-                  onClick={() => { router.push(link.path); setShowMoreMenu(false); }}
-                  className={`w-full flex items-center rounded-xl text-left text-sm font-semibold transition-all duration-200 ${
+                  href={link.path}
+                  prefetch={true}
+                  onClick={() => setShowMoreMenu(false)}
+                  className={`w-full flex items-center rounded-xl text-left text-sm font-semibold transition-all duration-150 ${
                     isSidebarHovered ? 'justify-start gap-4 px-4 py-3' : 'justify-center p-3'
                   } ${
                     isActive
-                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-xs font-bold'
+                      ? 'bg-blue-50 text-blue-800 border border-blue-200 shadow-xs font-bold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-transparent'
                   }`}
                   title={!isSidebarHovered ? link.label : undefined}
                 >
-                  <Icon size={20} className={`shrink-0 ${isActive ? 'text-emerald-700' : 'text-slate-400'}`} />
+                  <Icon size={20} className={`shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
                   {isSidebarHovered && <span className="truncate whitespace-nowrap">{link.label}</span>}
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -257,22 +250,24 @@ export default function HomeLayout({ children }) {
             const Icon = link.Icon;
             const isActive = activeTab === link.id;
             return (
-              <button
+              <Link
                 key={link.id}
-                onClick={() => { router.push(link.path); setShowMoreMenu(false); }}
+                href={link.path}
+                prefetch={true}
+                onClick={() => setShowMoreMenu(false)}
                 className="flex flex-col items-center justify-center min-h-[44px] min-w-[44px] rounded-xl text-slate-400 relative transition-transform active:scale-95"
               >
-                <div className={`p-1.5 rounded-xl transition-all ${isActive ? 'bg-emerald-50 text-emerald-700' : 'hover:text-slate-700'}`}>
-                  <Icon size={19} className={isActive ? 'text-emerald-700' : 'text-slate-500'} />
+                <div className={`p-1.5 rounded-xl transition-all ${isActive ? 'bg-blue-50 text-blue-700' : 'hover:text-slate-700'}`}>
+                  <Icon size={19} className={isActive ? 'text-blue-600' : 'text-slate-500'} />
                 </div>
                 {isActive && (
                   <motion.div
                     layoutId="activeDot"
-                    className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-emerald-600 shadow-sm shadow-emerald-500/50"
+                    className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-blue-600 shadow-sm shadow-blue-500/50"
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
-              </button>
+              </Link>
             );
           })}
         </nav>

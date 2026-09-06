@@ -120,13 +120,7 @@ export default function GoalsPage() {
     }
   };
 
-  if (!hydrated || !isAuthenticated) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]">
-        <div className="w-12 h-12 rounded-full border-2 border-emerald-200 border-t-blue-600 animate-spin" />
-      </div>
-    );
-  }
+  // Render immediately for snappy tab switching
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">

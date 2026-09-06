@@ -536,9 +536,7 @@ export default function GoalRoadmapPage() {
     toast({ title: "Saved! ✅" });
   }, [selectedGroup, goal, goalId, updateGoalMonthDetail]);
 
-  if (!hydrated || !isAuthenticated) {
-    return <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]"><div className="w-12 h-12 rounded-full border-2 border-emerald-200 border-t-emerald-700 animate-spin" /></div>;
-  }
+  // Render immediately
 
   if (!goal) {
     return (

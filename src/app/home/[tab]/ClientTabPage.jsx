@@ -909,16 +909,7 @@ export default function HomePage() {
     { id: 'history', label: 'Learning History', Icon: Clock },
     { id: 'profile', label: 'Profile', Icon: User }
   ];
-  if (!hydrated || !isAuthenticated) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full border-2 border-emerald-200 border-t-emerald-600 animate-spin" />
-          <p className="text-slate-600 font-semibold text-sm">Loading Money Matters...</p>
-        </div>
-      </div>
-    );
-  }
+  // Render immediately without delaying route navigation
 
   return (
     <main className="relative min-h-screen bg-[#F8FAFC] text-slate-900 overflow-x-hidden font-sans">
