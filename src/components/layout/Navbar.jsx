@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Trophy, IndianRupee, Calculator, BarChart3, Target, CircleDot, Zap, PiggyBank, HeartPulse, Receipt, Brain, Newspaper, Type, ListOrdered, UserCheck, TrendingUp, Shield, Calendar, Construction } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import { useAppStore } from '@/lib/store/useAppStore';
 import { useProgress } from '@/lib/hooks/useProgress';
-import { strategies } from '@/lib/data/strategies';
+import { STRATEGY_REGISTRY } from '@/lib/data/strategyRegistry';
 import CoinCounter from '@/components/shared/CoinCounter';
 import ProgressRing from '@/components/shared/ProgressRing';
 import { BadgeGallery } from '@/components/shared/BadgeGallery';
@@ -29,11 +29,6 @@ import HabitTracker from '@/components/shared/HabitTracker';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
-function getIcon(iconName) {
-  if (!iconName) return Construction;
-  const Icon = LucideIcons[iconName];
-  return Icon || Construction;
-}
 function getAbbreviatedTitle(title) {
   const abbreviations = {
     'Paise Ka GPS': 'GPS',
@@ -190,6 +185,7 @@ const TOOLS = [{
 // ────────────────────────────────────────────────────────────────────
 
 export function Navbar() {
+  const router = useRouter();
   const {
     activeStrategy,
     setActiveStrategy,
@@ -203,7 +199,7 @@ export function Navbar() {
   const [openTool, setOpenTool] = useState(null);
   const [badgeGalleryOpen, setBadgeGalleryOpen] = useState(false);
   const tabContainerRef = useRef(null);
-  const activeStrategyData = useMemo(() => strategies.find(s => s.id === activeStrategy), [activeStrategy]);
+  const activeStrategyData = useMemo(() => STRATEGY_REGISTRY.find(s => s.id === activeStrategy), [activeStrategy]);
   const badgeCount = useMemo(() => badges.length, [badges]);
 
   // Close mobile menu on Escape
@@ -296,18 +292,20 @@ export function Navbar() {
           "aria-label": "Strategy tabs",
           children: /*#__PURE__*/_jsx(TooltipProvider, {
             delayDuration: 300,
-            children: strategies.map(strategy => {
-              const Icon = getIcon(strategy.icon);
+            children: STRATEGY_REGISTRY.map(strategy => {
               const isActive = activeStrategy === strategy.id;
-              const shortTitle = getAbbreviatedTitle(strategy.title);
+              const shortTitle = getAbbreviatedTitle(strategy.name);
               return /*#__PURE__*/_jsxs(Tooltip, {
                 children: [/*#__PURE__*/_jsx(TooltipTrigger, {
                   asChild: true,
                   children: /*#__PURE__*/_jsxs("button", {
                     role: "tab",
                     "aria-selected": isActive,
-                    "aria-label": `${strategy.title} — ${strategy.titleEn}`,
-                    onClick: () => setActiveStrategy(strategy.id),
+                    "aria-label": strategy.name,
+                    onClick: () => {
+                      setActiveStrategy(strategy.id);
+                      router.push(`/strategy/${strategy.slug}`);
+                    },
                     className: `
                           relative flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-200
                           ${isActive ? 'text-blue-600 bg-blue-50' : 'text-ink-muted hover:text-ink hover:bg-white/[0.04]'}
@@ -315,14 +313,12 @@ export function Navbar() {
                     children: [/*#__PURE__*/_jsx("span", {
                       className: "w-1.5 h-1.5 rounded-full shrink-0",
                       style: {
-                        backgroundColor: strategy.color,
+                        backgroundColor: strategy.accentColor,
                         opacity: isActive ? 1 : 0.5
                       }
-                    }), /*#__PURE__*/_jsx(Icon, {
-                      className: "w-3.5 h-3.5 shrink-0",
-                      style: {
-                        color: isActive ? strategy.color : undefined
-                      }
+                    }), /*#__PURE__*/_jsx("span", {
+                      className: "w-3.5 h-3.5 shrink-0 flex items-center justify-center",
+                      children: strategy.iconName
                     }), /*#__PURE__*/_jsx("span", {
                       className: "hidden lg:inline",
                       children: shortTitle
@@ -348,10 +344,10 @@ export function Navbar() {
                   className: "glass-strong text-ink border border-white/[0.08] shadow-xl",
                   children: [/*#__PURE__*/_jsx("p", {
                     className: "font-semibold text-blue-600",
-                    children: strategy.title
+                    children: strategy.name
                   }), /*#__PURE__*/_jsx("p", {
                     className: "text-[10px] text-ink-muted",
-                    children: strategy.titleEn
+                    children: strategy.hook
                   })]
                 })]
               }, strategy.id);
@@ -540,12 +536,12 @@ export function Navbar() {
             })]
           }), /*#__PURE__*/_jsx("div", {
             className: "max-h-[60vh] overflow-y-auto p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 custom-scroll",
-            children: strategies.map((strategy, index) => {
-              const Icon = getIcon(strategy.icon);
+            children: STRATEGY_REGISTRY.map((strategy, index) => {
               const isActive = activeStrategy === strategy.id;
               return /*#__PURE__*/_jsxs(motion.button, {
                 onClick: () => {
                   setActiveStrategy(strategy.id);
+                  router.push(`/strategy/${strategy.slug}`);
                   setMobileMenuOpen(false);
                 },
                 className: `
@@ -564,31 +560,29 @@ export function Navbar() {
                   delay: index * 0.03,
                   duration: 0.2
                 },
-                "aria-label": `${strategy.title} — ${strategy.titleEn}`,
+                "aria-label": strategy.name,
                 children: [/*#__PURE__*/_jsxs("div", {
                   className: "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 relative",
                   style: {
-                    backgroundColor: `${strategy.color}15`
+                    backgroundColor: `${strategy.accentColor}15`
                   },
-                  children: [/*#__PURE__*/_jsx(Icon, {
-                    className: "w-4 h-4",
-                    style: {
-                      color: strategy.color
-                    }
+                  children: [/*#__PURE__*/_jsx("span", {
+                    className: "text-sm",
+                    children: strategy.iconName
                   }), /*#__PURE__*/_jsx("span", {
                     className: "absolute -top-0.5 -left-0.5 w-2 h-2 rounded-full border border-midnight",
                     style: {
-                      backgroundColor: strategy.color
+                      backgroundColor: strategy.accentColor
                     }
                   })]
                 }), /*#__PURE__*/_jsxs("div", {
                   className: "min-w-0",
                   children: [/*#__PURE__*/_jsx("div", {
                     className: "text-xs font-semibold truncate",
-                    children: strategy.title
+                    children: strategy.name
                   }), /*#__PURE__*/_jsx("div", {
                     className: "text-[10px] text-ink-muted truncate",
-                    children: strategy.titleEn
+                    children: strategy.hook
                   })]
                 })]
               }, strategy.id);
