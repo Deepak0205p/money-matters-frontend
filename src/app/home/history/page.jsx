@@ -14,10 +14,6 @@ export default function HistoryPage() {
       {/* Header section — Youth Fintech Theme */}
       <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-7 shadow-[0_2px_10px_rgba(0,0,0,0.03)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
-            <Sparkles size={12} className="text-emerald-700" />
-            Activity Log & Rewards
-          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-slate-900 tracking-tight flex items-center gap-2.5">
             <span className="p-2 rounded-xl bg-emerald-100/70 text-emerald-800">
               <History size={24} />

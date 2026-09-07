@@ -23,7 +23,8 @@ import {
   Trophy,
   Clock,
   ArrowLeft,
-  Target
+  Target,
+  Film
 } from "lucide-react";
 
 import { strategies } from '@/lib/data/strategies';
@@ -82,6 +83,7 @@ export default function HomeLayout({ children }) {
   // Tab path calculation
   const getActiveTab = () => {
     if (!pathname) return 'dashboard';
+    if (pathname.includes('/home/reels')) return 'reels';
     if (pathname.includes('/home/goals')) return 'goals';
     if (pathname.includes('/home/chatbot')) return 'chatbot';
     if (pathname.includes('/home/gamified')) return 'gamified';
@@ -99,6 +101,7 @@ export default function HomeLayout({ children }) {
 
   const sideLinks = [
     { id: 'dashboard', label: 'Dashboard', Icon: LayoutDashboard, path: '/home/dashboard' },
+    { id: 'reels', label: 'Finance Reels', Icon: Film, path: '/home/reels' },
     { id: 'goals', label: 'Your Goals', Icon: Target, path: '/home/goals' },
     { id: 'chatbot', label: 'AI Chat Bot', Icon: MessageSquare, path: '/home/chatbot' },
     { id: 'gamified', label: 'Gamified Concept', Icon: Trophy, path: '/home/gamified' },
@@ -122,7 +125,7 @@ export default function HomeLayout({ children }) {
   // Render shell immediately for snappy navigation without full-page blocking spinners
 
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC] text-slate-900 overflow-x-hidden font-sans">
+    <div className={`relative ${activeTab === 'chatbot' ? 'h-screen overflow-hidden' : 'min-h-screen'} bg-[#F8FAFC] text-slate-900 overflow-x-hidden font-sans`}>
       {/* Background ambient glows */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-500/[0.03] blur-[120px]" />
@@ -130,7 +133,7 @@ export default function HomeLayout({ children }) {
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #0F172A 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
       </div>
 
-      <div className="relative z-10 flex min-h-screen">
+      <div className={`relative z-10 flex ${activeTab === 'chatbot' ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
         {/* DESKTOP SIDEBAR */}
         <aside
           onMouseEnter={() => setIsSidebarHovered(true)}
@@ -256,7 +259,7 @@ export default function HomeLayout({ children }) {
         </header>
 
         {/* MOBILE BOTTOM NAVIGATION — Refined touch target >= 44px with active glow */}
-        <nav className="md:hidden fixed bottom-0 inset-x-0 h-16 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 grid grid-cols-7 items-center justify-around px-1 z-40">
+        <nav className="md:hidden fixed bottom-0 inset-x-0 h-16 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 flex items-center justify-between px-2 z-40 overflow-x-auto no-scrollbar">
           {sideLinks.map(link => {
             const Icon = link.Icon;
             const isActive = activeTab === link.id;
@@ -266,7 +269,7 @@ export default function HomeLayout({ children }) {
                 href={link.path}
                 prefetch={true}
                 onClick={() => setShowMoreMenu(false)}
-                className="flex flex-col items-center justify-center min-h-[44px] min-w-[44px] rounded-xl text-slate-400 relative transition-transform active:scale-95"
+                className="flex flex-col items-center justify-center min-h-[44px] min-w-[44px] flex-1 rounded-xl text-slate-400 relative transition-transform active:scale-95"
               >
                 <div className={`p-1.5 rounded-xl transition-all ${isActive ? 'bg-blue-50 text-blue-700' : 'hover:text-slate-700'}`}>
                   <Icon size={19} className={isActive ? 'text-blue-600' : 'text-slate-500'} />
@@ -284,14 +287,14 @@ export default function HomeLayout({ children }) {
         </nav>
 
         {/* MAIN CONTENT AREA */}
-        <div className={`flex-1 flex flex-col min-w-0 pb-16 md:pb-0 transition-all duration-300 ease-in-out ${
+        <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
           isSidebarHovered ? 'md:ml-64 lg:ml-72' : 'md:ml-20'
-        }`}>
+        } ${activeTab === 'chatbot' || activeTab === 'reels' ? 'h-screen overflow-hidden pb-0' : 'min-h-screen pb-16 md:pb-0'}`}>
           {/* Desktop Top Header Bar with unified Wallet Strip */}
-          <header className="hidden md:flex h-16 items-center justify-between px-6 border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-30">
+          <header className="hidden md:flex h-16 shrink-0 items-center justify-between px-6 border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-30">
             <div>
               <h2 className="text-sm font-extrabold uppercase tracking-widest text-slate-500 font-display">
-                {activeTab === 'dashboard' ? 'Home' : activeTab}
+                {activeTab === 'dashboard' ? 'Home' : activeTab === 'reels' ? 'Finance Reels' : activeTab}
               </h2>
             </div>
 
@@ -326,7 +329,7 @@ export default function HomeLayout({ children }) {
           </header>
 
           {/* Children Viewport */}
-          <div className={`flex-1 mt-16 md:mt-0 ${activeTab === 'chatbot' ? 'overflow-hidden flex flex-col' : 'overflow-y-auto px-4 py-6 md:p-8'}`}>
+          <div className={`flex-1 min-h-0 ${activeTab === 'chatbot' || activeTab === 'reels' ? 'h-[calc(100vh-4rem)] overflow-hidden flex flex-col p-2 md:p-4' : 'overflow-y-auto px-4 py-6 md:p-8 mt-16 md:mt-0'}`}>
             <Suspense fallback={
               <div className="flex items-center justify-center min-h-[300px]">
                 <div className="w-8 h-8 rounded-full border-3 border-emerald-200 border-t-emerald-700 animate-spin" />

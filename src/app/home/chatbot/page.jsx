@@ -318,14 +318,14 @@ export default function ChatbotPage() {
      RENDER
   ════════════════════════════════════════ */
   return (
-    <div className="flex h-full bg-[#F8FAFC]">
+    <div className="flex h-full w-full overflow-hidden bg-[#F8FAFC]">
 
       {/* ══════════ LEFT SIDEBAR ══════════ */}
-      <aside className="hidden md:flex w-[260px] shrink-0 flex-col bg-white border-r border-slate-200/80 h-full overflow-hidden">
+      <aside className="hidden md:flex w-[260px] shrink-0 flex-col bg-white border-r border-slate-200/80 h-full overflow-hidden select-none">
         {/* Header */}
-        <div className="flex items-center justify-between px-3 pt-3 pb-2 shrink-0">
+        <div className="flex items-center justify-between px-3 pt-3 pb-2 shrink-0 border-b border-slate-100">
           <div className="flex items-center gap-2.5 px-2 py-1">
-            <div className="size-7 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shrink-0 shadow-sm">
+            <div className="size-7 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-700 flex items-center justify-center shrink-0 shadow-sm">
               <Sparkles className="size-4 text-white" />
             </div>
             <span className="font-display text-sm font-bold text-slate-900 tracking-tight">Money Mentor</span>
@@ -334,17 +334,17 @@ export default function ChatbotPage() {
           <button
             onClick={newChat}
             title="New chat"
-            className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
+            className="p-2 rounded-lg text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 transition-all cursor-pointer"
           >
             <SquarePen className="size-4" />
           </button>
         </div>
 
         {/* New Chat button */}
-        <div className="px-2 pb-2 shrink-0">
+        <div className="p-3 shrink-0">
           <button
             onClick={newChat}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition-all border border-slate-200/80 cursor-pointer"
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition-all border border-slate-200/80 cursor-pointer shadow-xs"
           >
             <Plus className="size-4 text-emerald-700" />
             New chat
@@ -352,7 +352,7 @@ export default function ChatbotPage() {
         </div>
 
         {/* Conversation list */}
-        <div className="flex-1 overflow-y-auto px-2 pb-3" style={{ scrollbarWidth: 'thin' }}>
+        <div className="flex-1 min-h-0 overflow-y-auto px-2 pb-3" style={{ scrollbarWidth: 'thin' }}>
           {conversations.length > 0 && (
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-1 mt-1">Recent</p>
           )}
@@ -382,7 +382,7 @@ export default function ChatbotPage() {
                 </div>
                 <button
                   onClick={(e) => deleteConv(c.id, e)}
-                  className="size-5 opacity-0 group-hover:opacity-100 transition-opacity rounded flex items-center justify-center hover:text-red-500 shrink-0 ml-1"
+                  className="size-5 opacity-0 group-hover:opacity-100 transition-opacity rounded flex items-center justify-center hover:text-red-500 shrink-0 ml-1 cursor-pointer"
                 >
                   <Trash2 className="size-3" />
                 </button>
@@ -392,34 +392,34 @@ export default function ChatbotPage() {
         </div>
 
         {/* Status footer */}
-        <div className="px-4 py-3 border-t border-slate-100 shrink-0 flex items-center gap-2">
+        <div className="px-4 py-3 border-t border-slate-100 shrink-0 flex items-center gap-2 bg-slate-50/50">
           {checkingHealth ? (
             <Loader2 className="size-3 animate-spin text-slate-400" />
           ) : backendOk ? (
-            <span className="relative flex size-2"><span className="animate-ping absolute size-full rounded-full bg-blue-500 opacity-40" /><span className="relative size-2 rounded-full bg-blue-600" /></span>
+            <span className="relative flex size-2"><span className="animate-ping absolute size-full rounded-full bg-emerald-500 opacity-40" /><span className="relative size-2 rounded-full bg-emerald-600" /></span>
           ) : (
             <WifiOff className="size-3 text-red-500" />
           )}
-          <span className={`text-[11px] font-medium ${checkingHealth ? 'text-slate-500' : backendOk ? 'text-blue-600' : 'text-red-500'}`}>
+          <span className={`text-[11px] font-medium ${checkingHealth ? 'text-slate-500' : backendOk ? 'text-emerald-700 font-bold' : 'text-red-500'}`}>
             {checkingHealth ? 'Checking...' : backendOk ? 'Connected' : 'Backend offline'}
           </span>
         </div>
       </aside>
 
       {/* ══════════ MAIN CONTENT ══════════ */}
-      <div className="flex flex-1 flex-col min-w-0 relative overflow-hidden bg-[#F8FAFC]">
+      <div className="flex flex-1 flex-col h-full min-w-0 min-h-0 relative overflow-hidden bg-[#F8FAFC]">
 
         {/* ── Top bar (mobile only new-chat, desktop minimal) ── */}
-        <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-slate-200/80 bg-white">
+        <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-slate-200/80 bg-white z-10 shadow-2xs">
           <span className="text-sm font-semibold text-slate-900 md:hidden">Money Mentor</span>
           {/* Mobile: new chat */}
-          <button onClick={newChat} className="md:hidden p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <button onClick={newChat} className="md:hidden p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all cursor-pointer">
             <SquarePen className="size-4" />
           </button>
           {/* Desktop: just model label */}
-          <div className="hidden md:flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-            Money Mentor
-            <ChevronDown className="size-3.5 text-slate-400" />
+          <div className="hidden md:flex items-center gap-2 text-sm font-bold text-slate-900">
+            <span>Money Mentor</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-extrabold">AI</span>
           </div>
           <div className="hidden md:block w-8" />
         </div>
@@ -427,8 +427,8 @@ export default function ChatbotPage() {
         {/* ── Chat scroll area ── */}
         <div
           ref={chatRef}
-          className="flex-1 overflow-y-auto"
-          style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.06) transparent' }}
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
+          style={{ scrollbarWidth: 'thin' }}
         >
           {isEmpty ? (
             /* ── EMPTY STATE ── */

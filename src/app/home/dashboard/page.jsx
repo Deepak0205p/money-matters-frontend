@@ -244,11 +244,6 @@ function ModuleCard({ mod, index, isUnlocked, onClick }) {
                 <span className="text-[9px] font-black text-amber-700 uppercase tracking-wider tabular-nums">{progressPercent}%</span>
               </div>
             )}
-            {!isUnlocked && (
-              <div className="px-2 py-0.5 rounded-full bg-slate-200/70 border border-slate-300 text-[9px] font-bold text-slate-600">
-                Locked
-              </div>
-            )}
           </div>
         </div>
         <div className="flex-1 mt-1">
@@ -481,12 +476,6 @@ export default function DashboardPage() {
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-emerald-500/[0.04] blur-3xl pointer-events-none" />
         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6 z-10">
           <div className="flex-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 mb-3">
-              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800">
-                Understand Money, Secure Your Future
-              </span>
-            </div>
             <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2 tracking-tight">
               Ready to Compound, {user?.displayName?.split(' ')[0] ?? 'Champion'}! 🔥
             </h1>
@@ -653,12 +642,6 @@ export default function DashboardPage() {
             <p className="text-sm text-slate-600 mt-1 max-w-xl">
               Step-by-step personal finance for youth. Complete each module to unlock the next milestone! 🚀
             </p>
-          </div>
-          <div className="px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm flex items-center gap-2 w-fit">
-            <div className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-            <span className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider tabular-nums">
-              {completedModules.length} of {modules.length} Modules Conquered
-            </span>
           </div>
         </div>
 

@@ -21,23 +21,23 @@ function CodeBlock({ node, className, children, ...props }) {
 
   if (!isInline && match) {
     return (
-      <div className="relative group my-4 rounded-xl overflow-hidden border border-white/5 shadow-lg shadow-black/10">
-        <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-zinc-900 to-zinc-800 border-b border-white/5 text-xs text-zinc-400">
+      <div className="relative group my-4 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-300">
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5">
-              <div className="size-2 rounded-full bg-red-500/80" />
-              <div className="size-2 rounded-full bg-yellow-500/80" />
-              <div className="size-2 rounded-full bg-green-500/80" />
+              <div className="size-2.5 rounded-full bg-rose-500" />
+              <div className="size-2.5 rounded-full bg-amber-500" />
+              <div className="size-2.5 rounded-full bg-emerald-500" />
             </div>
-            <span className="font-mono">{match[1]}</span>
+            <span className="font-mono text-slate-400 font-semibold">{match[1]}</span>
           </div>
           <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="text-zinc-400 hover:text-white transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="text-slate-400 hover:text-white transition-colors cursor-pointer"
             onClick={handleCopy}
           >
-            {copied ? <Check className="h-3.5 w-3.5 text-green-400" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
           </motion.button>
         </div>
         <SyntaxHighlighter
@@ -46,9 +46,9 @@ function CodeBlock({ node, className, children, ...props }) {
           PreTag="div"
           customStyle={{
             margin: 0,
-            background: "rgba(10,12,22,0.95)",
+            background: "#0f172a",
             padding: "1rem",
-            fontSize: "0.875rem",
+            fontSize: "0.85rem",
           }}
           {...props}
         >
@@ -59,7 +59,7 @@ function CodeBlock({ node, className, children, ...props }) {
   }
 
   return (
-    <code className="px-1.5 py-0.5 rounded-md bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-white text-sm font-mono font-medium" {...props}>
+    <code className="px-1.5 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-mono font-bold" {...props}>
       {children}
     </code>
   );
@@ -67,7 +67,7 @@ function CodeBlock({ node, className, children, ...props }) {
 
 export function MarkdownRenderer({ content }) {
   return (
-    <div className="prose prose-sm prose-invert max-w-none break-words leading-relaxed">
+    <div className="max-w-none break-words leading-relaxed text-slate-800 text-sm">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -77,38 +77,38 @@ export function MarkdownRenderer({ content }) {
               {...props}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline underline-offset-2 decoration-blue-500/30 hover:decoration-blue-400/50 transition-colors"
+              className="text-emerald-700 hover:text-emerald-800 font-bold underline underline-offset-2 transition-colors"
             />
           ),
           table: ({ node, ...props }) => (
-            <div className="my-4 w-full overflow-y-auto rounded-xl border border-white/5">
-              <table className="w-full text-sm text-left border-collapse" {...props} />
+            <div className="my-4 w-full overflow-x-auto rounded-xl border border-slate-200 shadow-xs">
+              <table className="w-full text-xs text-left border-collapse bg-white" {...props} />
             </div>
           ),
           th: ({ node, ...props }) => (
             <th
-              className="border-b border-white/5 px-4 py-2.5 font-semibold text-zinc-400 bg-gradient-to-r from-blue-500/5 to-purple-500/5"
+              className="border-b border-slate-200 px-4 py-2.5 font-extrabold text-slate-900 bg-slate-50"
               {...props}
             />
           ),
           td: ({ node, ...props }) => (
-            <td className="border-b border-white/5 px-4 py-2.5 align-top text-zinc-300" {...props} />
+            <td className="border-b border-slate-100 px-4 py-2.5 align-top text-slate-700 font-medium" {...props} />
           ),
-          p: ({ node, ...props }) => <p className="mb-4 last:mb-0 text-zinc-200" {...props} />,
-          ul: ({ node, ...props }) => <ul className="list-disc list-outside ml-4 mb-4 text-zinc-200" {...props} />,
-          ol: ({ node, ...props }) => <ol className="list-decimal list-outside ml-4 mb-4 text-zinc-200" {...props} />,
-          li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+          p: ({ node, ...props }) => <p className="mb-3.5 last:mb-0 text-slate-800 leading-relaxed font-normal" {...props} />,
+          ul: ({ node, ...props }) => <ul className="list-disc list-outside ml-5 mb-3.5 space-y-1.5 text-slate-800" {...props} />,
+          ol: ({ node, ...props }) => <ol className="list-decimal list-outside ml-5 mb-3.5 space-y-1.5 text-slate-800" {...props} />,
+          li: ({ node, ...props }) => <li className="leading-relaxed font-normal text-slate-800" {...props} />,
           blockquote: ({ node, ...props }) => (
             <blockquote
-              className="border-l-4 border-blue-500 pl-4 italic text-zinc-400 bg-blue-500/5 py-2 rounded-r-lg my-4"
+              className="border-l-4 border-emerald-600 pl-4 italic text-slate-700 bg-emerald-50/50 py-2.5 rounded-r-xl my-4 text-sm font-medium"
               {...props}
             />
           ),
-          h1: ({ node, ...props }) => <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mt-6 mb-4" {...props} />,
-          h2: ({ node, ...props }) => <h2 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mt-5 mb-3" {...props} />,
-          h3: ({ node, ...props }) => <h3 className="text-base font-bold text-white mt-4 mb-2" {...props} />,
-          strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
-          em: ({ node, ...props }) => <em className="italic text-zinc-400" {...props} />,
+          h1: ({ node, ...props }) => <h1 className="text-xl font-extrabold text-slate-900 mt-5 mb-3 tracking-tight" {...props} />,
+          h2: ({ node, ...props }) => <h2 className="text-lg font-bold text-slate-900 mt-4 mb-2 tracking-tight" {...props} />,
+          h3: ({ node, ...props }) => <h3 className="text-base font-bold text-slate-900 mt-3.5 mb-1.5" {...props} />,
+          strong: ({ node, ...props }) => <strong className="font-extrabold text-slate-900" {...props} />,
+          em: ({ node, ...props }) => <em className="italic text-slate-700" {...props} />,
         }}
       >
         {content}

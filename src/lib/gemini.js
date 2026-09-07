@@ -1,0 +1,55 @@
+const CANDIDATE_MODELS = [
+  process.env.GEMINI_MODEL,
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
+  'gemini-3.6-flash',
+  'gemini-3.5-flash'
+].filter(Boolean);
+
+export async function callGemini({ systemInstruction, contents, temperature = 0.6, maxTokens = 900 }) {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  if (!apiKey) {
+    console.warn("No Gemini API key found in environment variables");
+    return null;
+  }
+
+  for (const model of CANDIDATE_MODELS) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents,
+        generationConfig: {
+          temperature,
+          maxOutputTokens: maxTokens,
+        }
+      };
+
+      if (systemInstruction) {
+        payload.systemInstruction = {
+          parts: [{ text: systemInstruction }]
+        };
+      }
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        continue;
+      }
+
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) {
+        return text;
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return null;
+}

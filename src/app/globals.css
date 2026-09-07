@@ -95,22 +95,22 @@
   --radius: 1.25rem;
 
   --background: #FAFAF8;
-  --foreground: #111827;
+  --foreground: #020617;
 
   --card: #FFFFFF;
-  --card-foreground: #111827;
+  --card-foreground: #020617;
 
   --popover: #FFFFFF;
-  --popover-foreground: #111827;
+  --popover-foreground: #020617;
 
   --primary: #047857;
   --primary-foreground: #FFFFFF;
 
-  --secondary: #F3F4F6;
-  --secondary-foreground: #111827;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #020617;
 
-  --muted: #F9FAFB;
-  --muted-foreground: #4B5563;
+  --muted: #F8FAFC;
+  --muted-foreground: #0f172a;
 
   --accent: #4F46E5;
   --accent-foreground: #FFFFFF;
@@ -118,8 +118,8 @@
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
 
-  --border: #E5E7EB;
-  --input: #E5E7EB;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
   --ring: #047857;
 
   --chart-1: #047857;
@@ -129,12 +129,12 @@
   --chart-5: #EF4444;
 
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #111827;
+  --sidebar-foreground: #020617;
   --sidebar-primary: #047857;
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #ECFDF5;
-  --sidebar-accent-foreground: #065F46;
-  --sidebar-border: #E5E7EB;
+  --sidebar-accent-foreground: #064E3B;
+  --sidebar-border: #E2E8F0;
   --sidebar-ring: #047857;
 }
 
@@ -1216,8 +1216,7 @@ input[type="range"]::-moz-range-thumb {
    Coin rain · level-up burst
    ════════════════════════════════════════════════════════════════════════ */
 
-/* 1. Animated gradient background system — multi-hue radial wash */
-body {
+.dark body {
   background: #0B1220;
   background-image:
     radial-gradient(ellipse at 20% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 50%),
@@ -1418,3 +1417,53 @@ nextjs-portal,
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   GLOBAL HIGH-CONTRAST TYPOGRAPHY ENHANCEMENT
+   Ensures all body text, subtitles, descriptions, and labels are dark, sharp black (#020617 / #0f172a / #1e293b / #334155)
+   ════════════════════════════════════════════════════════════════════════ */
+:root {
+  color: #020617;
+}
+
+p, span, div, h1, h2, h3, h4, h5, h6, label, input, button, a {
+  --tw-text-opacity: 1;
+}
+
+/* Transform light grey text utility classes to dark readable contrast */
+.text-slate-400,
+.text-zinc-400,
+.text-gray-400,
+.text-neutral-400 {
+  color: #334155 !important;
+}
+
+.text-slate-500,
+.text-zinc-500,
+.text-gray-500,
+.text-neutral-500 {
+  color: #1e293b !important;
+}
+
+.text-slate-600,
+.text-zinc-600,
+.text-gray-600,
+.text-neutral-600 {
+  color: #0f172a !important;
+}
+
+.text-slate-700,
+.text-zinc-700,
+.text-gray-700,
+.text-neutral-700 {
+  color: #020617 !important;
+}
+
+.text-muted-foreground {
+  color: #0f172a !important;
+}
+
+.text-slate-900-muted {
+  color: #1e293b !important;
+}
+
