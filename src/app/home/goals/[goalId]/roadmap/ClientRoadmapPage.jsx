@@ -216,7 +216,7 @@ function LadderSVG({ groups, completedCount }) {
               fill={done ? "#fff" : current ? "#F59E0B" : "#444"} fontSize={done ? "13" : "11"} fontWeight="bold"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 + i * 0.15 }}
             >
-              {done ? "✓" : `P${i + 1}`}
+              {done ? "✓" : `${i + 1}`}
             </motion.text>
 
             {/* Star on completed */}
