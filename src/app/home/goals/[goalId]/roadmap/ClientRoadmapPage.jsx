@@ -610,11 +610,8 @@ export default function GoalRoadmapPage({ goalId: propGoalId }) {
             ))}
           </motion.div>
 
-          {/* Ladder + Month Groups */}
-          <div className="relative" style={{ minHeight: (roadmap.monthGroups?.length || 4) * 200 + 120 }}>
-            {/* Ladder SVG */}
-            <LadderSVG groups={roadmap.monthGroups} completedCount={completedCount} />
-
+          {/* Month Groups List */}
+          <div className="relative">
             {/* Month Group Cards */}
             <div className="relative z-10 space-y-6">
               {roadmap.monthGroups?.map((group, i) => {
